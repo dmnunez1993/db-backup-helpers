@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+source /etc/bash_completion
+
+cd /db_backups
+
+if [ -f $HOME/.bashrc ]; then
+  source $HOME/.bashrc
+fi
+
+source $HOME/.virtualenvs/venv/bin/activate
+
+# Start bash
+bash -l
