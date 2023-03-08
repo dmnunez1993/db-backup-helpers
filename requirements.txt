@@ -1,0 +1,11 @@
+APScheduler==3.10.1
+distlib==0.3.6
+filelock==3.9.0
+platformdirs==3.1.0
+pytz==2022.7.1
+pytz-deprecation-shim==0.1.0.post0
+PyYAML==6.0
+six==1.16.0
+tzdata==2022.7
+tzlocal==4.2
+virtualenv==20.20.0
