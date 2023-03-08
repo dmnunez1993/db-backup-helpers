@@ -23,7 +23,15 @@ class BackupScheduler(object):
         self._google_drive_backup_enabled = os.environ.get(
             'GOOGLE_DRIVE_BACKUP_ENABLED', 'true') == 'true'
 
+        self._creating_backup = False
+
     def handle_backups(self):
+        if self._creating_backup:
+            self._logger.info("Backup creation already in process! Skipping...")
+            return
+
+        self._creating_backup = True
+
         if self._database_type == DATABASE_TYPE_MYSQL:
             handler = MySQLBackupHandler(logger=self._logger)
             backup_filename = handler.backup()
@@ -34,6 +42,8 @@ class BackupScheduler(object):
             if self._google_drive_backup_enabled:
                 self._handle_google_drive_backups(backup_filename,
                                                   removed_filenames)
+
+        self._creating_backup = False
 
     def _handle_google_drive_backups(self, backup_filename, removed_filenames):
         gdrive_handler = GoogleDriveHandler()
