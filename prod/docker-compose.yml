@@ -1,0 +1,8 @@
+version: "3.1"
+services:
+  backend:
+    image: "saucony_shopify_backend:latest"
+    env_file: .env
+    restart: always
+    tty: true
+    stdin_open: true

@@ -1,0 +1,80 @@
+#!/usr/bin/env python3
+import os
+import subprocess
+import sys
+
+from dotenv import load_dotenv
+
+if os.path.isfile(".env"):
+    print("Loading env file...")
+    load_dotenv(".env")
+
+DB_BACKUPS_IMAGE_NAME = 'db_backups'
+COMPOSE_NAME = 'db_backups_prod'
+
+IMAGE_NAMES = [
+    DB_BACKUPS_IMAGE_NAME,
+]
+
+
+def run_command(command):
+    subprocess.call(command, shell=True)
+
+
+def get_repo_root():
+    return subprocess.check_output('git rev-parse --show-toplevel'.split(),
+                                   encoding='utf-8').strip()
+
+
+def main():
+    command = sys.argv[1]
+
+    repo_root = get_repo_root()
+    dockerfile_path = os.path.join(repo_root, 'prod', 'Dockerfile')
+
+    if command == 'build':
+        print("Building services...")
+        run_command('cd {} && docker build -f {} -t {}:latest .'.format(
+            repo_root, dockerfile_path, DB_BACKUPS_IMAGE_NAME))
+
+    if command == 'push':
+        registry = sys.argv[2]
+
+        for image_name in IMAGE_NAMES:
+            run_command('docker tag {}:latest {}/{}'.format(
+                image_name,
+                registry,
+                image_name,
+            ))
+            run_command('docker push {}/{}'.format(registry, image_name))
+
+    if command == 'pull':
+        registry = sys.argv[2]
+
+        for image_name in IMAGE_NAMES:
+            run_command('docker pull {}/{}'.format(registry, image_name))
+            run_command('docker tag {}/{} {}:latest'.format(
+                registry, image_name, image_name))
+
+    if command == 'deploy':
+        print("Deploying services...")
+        run_command(
+            'cd prod && docker-compose -p {} up -d'.format(COMPOSE_NAME))
+
+    if command == 'start':
+        print("Starting services...")
+        run_command('cd prod && docker-compose -p {} up'.format(COMPOSE_NAME))
+
+    if command == 'stop':
+        print("Stopping services...")
+        run_command('cd prod && docker-compose -p {} stop'.format(COMPOSE_NAME))
+
+    if command == 'shell':
+        print("Starting up shell...")
+        run_command(
+            'cd prod && docker-compose -p {} run backend sh -c "cd / && sh"'.
+            format(COMPOSE_NAME))
+
+
+if __name__ == '__main__':
+    main()
