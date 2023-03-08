@@ -17,7 +17,14 @@ class GoogleDriveHandler(object):
         GoogleAuth.DEFAULT_SETTINGS[
             'client_config_file'] = self._google_drive_secrets_file
 
-        self._gauth = GoogleAuth()
+        self._gauth = GoogleAuth(
+            settings={
+                "client_config_backend": "file",
+                "client_config_file": self._google_drive_secrets_file,
+                "save_credentials": False,
+                "oauth_scope": ["https://www.googleapis.com/auth/drive"],
+                "get_refresh_token": True
+            })
 
         self._gauth.LoadCredentialsFile(self._google_drive_credentials_file)
 

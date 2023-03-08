@@ -23,7 +23,14 @@ class BackupScheduler(object):
         self._google_drive_backup_enabled = os.environ.get(
             'GOOGLE_DRIVE_BACKUP_ENABLED', 'true') == 'true'
 
+        if self._google_drive_backup_enabled:
+            self._scheduler.add_job(self.refresh_google_credentials,
+                                    CronTrigger.from_crontab("*/1 * * * *"))
+
         self._creating_backup = False
+
+    def refresh_google_credentials(self):
+        GoogleDriveHandler()
 
     def handle_backups(self):
         if self._creating_backup:
