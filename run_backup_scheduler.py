@@ -1,5 +1,7 @@
 #!/usr/bin/env python
+from datetime import datetime
 import os
+import logging
 
 from dotenv import load_dotenv
 
@@ -11,12 +13,17 @@ if os.path.isfile(".env"):
 
 DATABASE_TYPE = os.environ['DATABASE_TYPE']
 
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(message)s')
+
+logger = logging.getLogger('db_backupgs_scheduler')
+logger.setLevel(logging.DEBUG)
+
 
 def main():
     if DATABASE_TYPE == DATABASE_TYPE_MYSQL:
-        print("here")
-        handler = MySQLBackupHandler()
+        handler = MySQLBackupHandler(logger=logger)
         handler.backup()
+        handler.clean_backups_before_time(datetime.now())
 
 
 if __name__ == '__main__':
