@@ -22,7 +22,7 @@ class GoogleDriveHandler(object):
         self._gauth.LoadCredentialsFile(self._google_drive_credentials_file)
 
         if self._gauth.credentials is None:
-            self._gauth.LocalWebserverAuth()
+            self._gauth.LocalWebserverAuth(host_name='localhost')
         elif self._gauth.access_token_expired:
             self._gauth.Refresh()
         else:
@@ -37,7 +37,7 @@ class GoogleDriveHandler(object):
         gdrive_file = self._drive.CreateFile({
             'title': filename,
             'parents': [{
-                'id': self._backup_folder
+                'id': self._google_drive_backup_folder_id
             }]
         })
         gdrive_file.SetContentFile(file_path)
