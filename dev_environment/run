@@ -53,7 +53,7 @@ def run_dev_environment():
     docker_args.append("--workdir /db_backups/")
 
     docker_args = ' '.join(docker_args)
-    docker_command = "docker run {} araitek_iot_dev_env setup_env".format(docker_args)
+    docker_command = "docker run {} db_backups_dev_env setup_env".format(docker_args)
 
     run_command("mkdir -p {}/.db_backups_dev_env/user/".format(home_folder))
     run_command(docker_command)
