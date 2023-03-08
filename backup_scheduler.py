@@ -1,0 +1,31 @@
+from datetime import datetime, timedelta
+import os
+
+from apscheduler.schedulers.blocking import BlockingScheduler
+from apscheduler.triggers.cron import CronTrigger
+
+from db_types import DATABASE_TYPE_MYSQL
+from backup_handlers import MySQLBackupHandler
+
+
+class BackupScheduler(object):
+
+    def __init__(self, logger):
+        self._database_type = os.environ['DATABASE_TYPE']
+        self._schedule = os.environ['SCHEDULE']
+        self._days_to_keep_backups = int(os.environ['DAYS_TO_KEEP_BACKUPS'])
+        self._logger = logger
+        self._scheduler = BlockingScheduler()
+        self._scheduler.add_job(self.handle_backups,
+                                CronTrigger.from_crontab(self._schedule))
+
+    def handle_backups(self):
+        if self._database_type == DATABASE_TYPE_MYSQL:
+            handler = MySQLBackupHandler(logger=self._logger)
+            handler.backup()
+            limit_dt = datetime.utcnow() - timedelta(
+                days=self._days_to_keep_backups)
+            handler.clean_backups_before_time(limit_dt)
+
+    def run(self):
+        self._scheduler.start()
