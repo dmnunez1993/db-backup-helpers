@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 import os
 
 from apscheduler.schedulers.blocking import BlockingScheduler
@@ -13,6 +13,7 @@ class BackupScheduler(object):
     def __init__(self, logger):
         self._database_type = os.environ['DATABASE_TYPE']
         self._schedule = os.environ['SCHEDULE']
+        self._days_to_keep_backups = int(os.environ['DAYS_TO_KEEP_BACKUPS'])
         self._logger = logger
         self._scheduler = BlockingScheduler()
         self._scheduler.add_job(self.handle_backups,
@@ -22,7 +23,9 @@ class BackupScheduler(object):
         if self._database_type == DATABASE_TYPE_MYSQL:
             handler = MySQLBackupHandler(logger=self._logger)
             handler.backup()
-            handler.clean_backups_before_time(datetime.now())
+            limit_dt = datetime.utcnow() - timedelta(
+                days=self._days_to_keep_backups)
+            handler.clean_backups_before_time(limit_dt)
 
     def run(self):
         self._scheduler.start()
