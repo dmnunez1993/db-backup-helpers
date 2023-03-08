@@ -1,8 +1,12 @@
 [MASTER]
 disable=
-    C0114, # missing-module-docstring
-    C0115, # missing-class-docstring
-    C0116, # missing-function-docstring
+    missing-module-docstring,
+    missing-class-docstring,
+    missing-function-docstring,
+    useless-object-inheritance,
+    unspecified-encoding,
+    consider-using-f-string,
+    duplicate-string-formatting-argument,
 
 [DESIGN]
 max-parents=15

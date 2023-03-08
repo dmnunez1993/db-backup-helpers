@@ -3,25 +3,26 @@ import getpass
 import subprocess
 import os
 
-
 DB_BACKUPS_VOLUME_NAME = 'db_backups_dev_volume'
 
 
 def run_command(command, hide_std=False):
     if hide_std:
-        with open(os.devnull, 'w') as DEVNULL:
-            return subprocess.call(command, shell=True, stdout=DEVNULL, stderr=DEVNULL)
+        with open(os.devnull, 'w') as dev_null:
+            return subprocess.call(command,
+                                   shell=True,
+                                   stdout=dev_null,
+                                   stderr=dev_null)
     return subprocess.call(command, shell=True)
 
 
 def get_repo_root():
-    return subprocess.check_output(
-        'git rev-parse --show-toplevel'.split(),
-        encoding='utf-8').strip()
+    return subprocess.check_output('git rev-parse --show-toplevel'.split(),
+                                   encoding='utf-8').strip()
 
 
 def check_volume_exists(volume_name):
-    command = "docker volume inspect {}".format(volume_name)
+    command = f"docker volume inspect {volume_name}"
     ret = run_command(command, True) == 0
     return ret
 
@@ -30,11 +31,11 @@ def run_dev_environment():
     user = getpass.getuser()
     uid = os.getuid()
     docker_args = []
-    
+
     if not check_volume_exists(DB_BACKUPS_VOLUME_NAME):
         print("Creating backups volume...")
-        run_command("docker volume create {}".format(DB_BACKUPS_VOLUME_NAME), True)
-
+        run_command("docker volume create {}".format(DB_BACKUPS_VOLUME_NAME),
+                    True)
 
     home_folder = os.path.expanduser("~")
     docker_args.append("-it")
@@ -43,17 +44,22 @@ def run_dev_environment():
     docker_args.append("-p 8080:8080")
     docker_args.append("--user {}:{}".format(uid, uid))
     docker_args.append("-e USER={}".format(user))
-    docker_args.append("--volume {}/.db_backups_dev_env/user/:/home/{}/".format(home_folder, user))
-    docker_args.append("--volume {}/.ssh/:/home/{}/.ssh/".format(home_folder, user))
-    docker_args.append("--volume {}/.gitconfig:/home/{}/.gitconfig".format(home_folder, user))
+    docker_args.append("--volume {}/.db_backups_dev_env/user/:/home/{}/".format(
+        home_folder, user))
+    docker_args.append("--volume {}/.ssh/:/home/{}/.ssh/".format(
+        home_folder, user))
+    docker_args.append("--volume {}/.gitconfig:/home/{}/.gitconfig".format(
+        home_folder, user))
     docker_args.append("--volume {}:/db_backups/".format(get_repo_root()))
-    docker_args.append("--volume {}:/backups_folder/".format(DB_BACKUPS_VOLUME_NAME))
+    docker_args.append(
+        "--volume {}:/backups_folder/".format(DB_BACKUPS_VOLUME_NAME))
     docker_args.append("--name db_backups_dev_env")
     docker_args.append("--hostname db_backups_dev_env")
     docker_args.append("--workdir /db_backups/")
 
     docker_args = ' '.join(docker_args)
-    docker_command = "docker run {} db_backups_dev_env setup_env".format(docker_args)
+    docker_command = "docker run {} db_backups_dev_env setup_env".format(
+        docker_args)
 
     run_command("mkdir -p {}/.db_backups_dev_env/user/".format(home_folder))
     run_command(docker_command)
@@ -69,7 +75,7 @@ def is_running():
     command = 'docker ps | grep db_backups_dev_env > /dev/null'
     try:
         subprocess.check_call(command, shell=True)
-    except Exception:
+    except subprocess.CalledProcessError:
         return False
 
     return True
@@ -80,6 +86,7 @@ def main():
         run_dev_environment()
     else:
         attach_dev_environment()
+
 
 if __name__ == '__main__':
     main()
