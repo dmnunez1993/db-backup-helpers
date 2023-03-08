@@ -1,0 +1,13 @@
+version: "3.1"
+services:
+  backend:
+    image: "db_backups:latest"
+    env_file: .env
+    restart: always
+    tty: true
+    stdin_open: true
+    ports:
+      - ${EXTERNAL_GDRIVE_AUTH_PORT}:8080
+    volumes:
+      - ${EXTERNAL_BACKUP_FOLDER}:${BACKUP_FOLDER}
+      - ${EXTERNAL_CREDENTIALS_FOLDER}:${CREDENTIALS_FOLDER}
