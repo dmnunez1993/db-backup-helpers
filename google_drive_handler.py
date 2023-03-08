@@ -11,7 +11,7 @@ class GoogleDriveHandler(object):
             'GOOGLE_DRIVE_SECRETS_FILE']
         self._google_drive_credentials_file = os.environ[
             'GOOGLE_DRIVE_CREDENTIALS_FILE']
-        self._google_drive_folder_id = os.environ[
+        self._google_drive_backup_folder_id = os.environ[
             'GOOGLE_DRIVE_BACKUP_FOLDER_ID']
         self._backup_folder = os.environ['BACKUP_FOLDER']
         GoogleAuth.DEFAULT_SETTINGS[
@@ -42,3 +42,15 @@ class GoogleDriveHandler(object):
         })
         gdrive_file.SetContentFile(file_path)
         gdrive_file.Upload()
+
+    def remove_files(self, filenames):
+        gdrive_file_list = self._drive.ListFile({
+            'q':
+                f"'{self._google_drive_backup_folder_id}' in parents and trashed=false"
+        }).GetList()
+
+        for gdrive_filedata in gdrive_file_list:
+            if gdrive_filedata['title'] in filenames:
+                gdrive_file = self._drive.CreateFile(
+                    {'id': gdrive_filedata['id']})
+                gdrive_file.Delete()
