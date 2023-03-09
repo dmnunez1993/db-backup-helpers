@@ -25,7 +25,7 @@ class BackupScheduler(object):
 
         if self._google_drive_backup_enabled:
             self._scheduler.add_job(self.refresh_google_credentials,
-                                    CronTrigger.from_crontab("*/1 * * * *"))
+                                    CronTrigger.from_crontab("*/10 * * * *"))
 
         self._creating_backup = False
 
