@@ -1,6 +1,6 @@
 FROM python:3.9.6-alpine
 
-RUN apk update && apk add build-base gcc python3-dev musl-dev libffi-dev freetype-dev mysql-client
+RUN apk update && apk add build-base gcc python3-dev musl-dev libffi-dev freetype-dev mysql-client zip
 
 RUN mkdir /db_backups
 

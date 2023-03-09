@@ -19,18 +19,27 @@ class MySQLBackupHandler(object):
 
     def backup(self):
         timestamp = datetime.utcnow().strftime(TIMESTAMP_FORMAT)
-        target_filename = f'{self._database_name}-{timestamp}.sql'
-        output_path = os.path.join(self._backup_folder, target_filename)
+        target_filename_sql = f'{self._database_name}-{timestamp}.sql'
+        target_filename_zip = f'{self._database_name}-{timestamp}.zip'
+        output_path_sql = os.path.join(self._backup_folder, target_filename_sql)
+        self._logger.info(f"Creating MySQL backup with name: {target_filename_sql}")
         command = f"""
             mysqldump \
                 --host={self._database_host} \
                 --port={self._database_port} \
                 --user={self._database_user} \
-                --password='{self._database_password}' {self._database_name} > {output_path}
+                --password='{self._database_password}' {self._database_name} > {output_path_sql}
             """
         run_command(command)
 
-        return target_filename
+        self._logger.info(f"Compressing backup to file {target_filename_zip}")
+
+        command = f"cd {self._backup_folder} && zip -r {target_filename_zip} {target_filename_sql}"
+        run_command(command)
+
+        os.remove(output_path_sql)
+
+        return target_filename_zip
 
     def clean_backups_before_time(self, limit_dt):
         removed_backups = []

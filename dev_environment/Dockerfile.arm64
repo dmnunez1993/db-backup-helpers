@@ -12,7 +12,7 @@ LABEL Description="Image to facilitate development of DB Backups app."
 ENV DEBIAN_FRONTEND=noninteractive
 
 # Install required packages to run apps
-RUN apt-get update && apt-get install -y build-essential git bash-completion python3-pip wget autoconf libtool unzip curl vim
+RUN apt-get update && apt-get install -y build-essential git bash-completion python3-pip wget autoconf libtool unzip curl vim zip unzip
 
 # Install required packages to manage mysql
 RUN apt-get update && apt-get install -y mysql-client
