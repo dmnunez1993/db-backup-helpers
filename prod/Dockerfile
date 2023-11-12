@@ -13,4 +13,4 @@ RUN pip install -r requirements.txt
 
 COPY ./. /db_backups/
 
-CMD ["python3", "run_backup_scheduler.py"]
+CMD ["python3", "app.py"]

@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from logging import Logger
 import os
 
 from apscheduler.schedulers.blocking import BlockingScheduler
@@ -11,7 +12,7 @@ from google_drive_handler import GoogleDriveHandler
 
 class BackupScheduler(object):
 
-    def __init__(self, logger):
+    def __init__(self, logger: Logger):
         self._database_type = os.environ['DATABASE_TYPE']
         self._schedule = os.environ['SCHEDULE']
         self._days_to_keep_backups = int(os.environ['DAYS_TO_KEEP_BACKUPS'])

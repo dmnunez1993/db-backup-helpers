@@ -1,4 +1,5 @@
 from datetime import datetime
+from logging import Logger
 import os
 
 from process import run_command
@@ -8,7 +9,7 @@ TIMESTAMP_FORMAT = '%Y-%m-%dT%H-%M-%S'
 
 class MySQLBackupHandler(object):
 
-    def __init__(self, logger=None):
+    def __init__(self, logger: Logger):
         self._database_host = os.environ['MYSQL_HOST']
         self._database_port = os.environ['MYSQL_PORT']
         self._database_user = os.environ['MYSQL_USER']
@@ -22,7 +23,8 @@ class MySQLBackupHandler(object):
         target_filename_sql = f'{self._database_name}-{timestamp}.sql'
         target_filename_zip = f'{self._database_name}-{timestamp}.zip'
         output_path_sql = os.path.join(self._backup_folder, target_filename_sql)
-        self._logger.info(f"Creating MySQL backup with name: {target_filename_sql}")
+        self._logger.info(
+            f"Creating MySQL backup with name: {target_filename_sql}")
         command = f"""
             mysqldump \
                 --host={self._database_host} \
