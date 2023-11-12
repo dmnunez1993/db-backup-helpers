@@ -24,8 +24,8 @@
       "editor.formatOnSaveMode": "file",
       "editor.formatOnType": false
     },
-    "python.defaultInterpreterPath": "/home/diego/.virtualenvs/venv/bin/python",
-    "pylint.interpreter": ["/home/diego/.virtualenvs/venv/bin/python"],
+    "python.defaultInterpreterPath": "/path/to/python",
+    "pylint.interpreter": ["/path/to/python"],
     "yapf.args": [
       "--style",
       "${workspaceFolder}/.style.yapf"
