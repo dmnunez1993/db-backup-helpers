@@ -5,3 +5,5 @@ __pycache__/
 
 client_secrets.json
 credentials.txt
+
+.python-version
