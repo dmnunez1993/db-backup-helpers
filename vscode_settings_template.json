@@ -1,0 +1,58 @@
+{
+    "editor.defaultFormatter": null,
+    "editor.formatOnSave": true,
+    "editor.formatOnType": false,
+    "[javascript]": {
+      "editor.tabSize": 2,
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[typescript]": {
+      "editor.tabSize": 2,
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[typescriptreact]": {
+      "editor.tabSize": 2,
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[html]": {
+      "editor.formatOnSave": false
+    },
+    "[python]": {
+      "editor.insertSpaces": true,
+      "editor.tabSize": 4,
+      "editor.defaultFormatter": "eeyore.yapf",
+      "editor.formatOnSaveMode": "file",
+      "editor.formatOnType": false
+    },
+    "python.defaultInterpreterPath": "/home/diego/.virtualenvs/venv/bin/python",
+    "pylint.interpreter": ["/home/diego/.virtualenvs/venv/bin/python"],
+    "yapf.args": [
+      "--style",
+      "${workspaceFolder}/.style.yapf"
+    ],
+    "files.insertFinalNewline": true,
+    "terminal.integrated.profiles.linux": {
+      "bash": {
+        "path": "/usr/local/bin/attach_env",
+        "icon": "terminal-bash"
+      },
+      "zsh": {
+        "path": "zsh"
+      },
+      "fish": {
+        "path": "fish"
+      },
+      "tmux": {
+        "path": "tmux",
+        "icon": "terminal-tmux"
+      },
+      "pwsh": {
+        "path": "pwsh",
+        "icon": "terminal-powershell"
+      }
+    },
+    "terminal.integrated.env.linux": {
+      "PYTHONPATH": "/manufacturing_control/backend"
+    },
+    "terminal.integrated.defaultProfile.linux": "bash"
+  }

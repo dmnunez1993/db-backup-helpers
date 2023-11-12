@@ -26,6 +26,7 @@ class GoogleDriveHandler(object):
                 "get_refresh_token": True
             })
 
+    def authorize(self):
         self._gauth.LoadCredentialsFile(self._google_drive_credentials_file)
 
         if self._gauth.credentials is None:

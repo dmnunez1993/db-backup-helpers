@@ -5,7 +5,7 @@ from apscheduler.schedulers.blocking import BlockingScheduler
 from apscheduler.triggers.cron import CronTrigger
 
 from db_types import DATABASE_TYPE_MYSQL
-from backup_handlers import MySQLBackupHandler
+from mysql_handler import MySQLBackupHandler
 from google_drive_handler import GoogleDriveHandler
 
 
@@ -22,6 +22,7 @@ class BackupScheduler(object):
 
         self._google_drive_backup_enabled = os.environ.get(
             'GOOGLE_DRIVE_BACKUP_ENABLED', 'true') == 'true'
+        self._google_drive_handler = GoogleDriveHandler()
 
         if self._google_drive_backup_enabled:
             self._scheduler.add_job(self.refresh_google_credentials,
@@ -30,7 +31,7 @@ class BackupScheduler(object):
         self._creating_backup = False
 
     def refresh_google_credentials(self):
-        GoogleDriveHandler()
+        self._google_drive_handler.authorize()
 
     def handle_backups(self):
         if self._creating_backup:
@@ -53,9 +54,9 @@ class BackupScheduler(object):
         self._creating_backup = False
 
     def _handle_google_drive_backups(self, backup_filename, removed_filenames):
-        gdrive_handler = GoogleDriveHandler()
-        gdrive_handler.upload_file(backup_filename)
-        gdrive_handler.remove_files(removed_filenames)
+        self._google_drive_handler.authorize()
+        self._google_drive_handler.upload_file(backup_filename)
+        self._google_drive_handler.remove_files(removed_filenames)
 
     def run(self):
         self._scheduler.start()

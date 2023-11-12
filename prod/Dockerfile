@@ -11,11 +11,6 @@ WORKDIR /db_backups
 RUN pip install pip==21.2.4
 RUN pip install -r requirements.txt
 
-COPY ./backup_handlers.py /db_backups/backup_handlers.py
-COPY ./backup_scheduler.py /db_backups/backup_scheduler.py
-COPY ./db_types.py /db_backups/db_types.py
-COPY ./google_drive_handler.py /db_backups/google_drive_handler.py
-COPY ./process.py /db_backups/process.py
-COPY ./run_backup_scheduler.py /db_backups/run_backup_scheduler.py
+COPY ./. /db_backups/
 
 CMD ["python3", "run_backup_scheduler.py"]
